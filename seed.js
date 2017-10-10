@@ -54,12 +54,90 @@ var books_list = [
   }
 ];
 
-db.Book.remove({}, function(err, books){
+var authors_list = [
+  {
+    name: "Harper Lee",
+    alive: false
+  },
+  {
+    name: "F Scott Fitzgerald",
+    alive: false
+  },
+  {
+    name: "Victor Hugo",
+    alive: false
+  },
+  {
+    name: "Jules Verne",
+    alive: false
+  },
+  {
+    name: "Sheryl Sandberg",
+    alive: true
+  },
+  {
+    name: "Tim Ferriss",
+    alive: true
+  },
+  {
+    name: "John Steinbeck",
+    alive: false
+  },
+  {
+    name: "William Shakespeare",
+    alive: false
+  }
+];
 
-  db.Book.create(books_list, function(err, books){
-    if (err) { return console.log(err); }
-    console.log("created", books.length, "books");
-    process.exit();
+db.Author.remove({}, function(err, authors) {
+  //firs you are rmeeoving everything from the dtatabase author collection
+  console.log('removed all authors');
+  db.Author.create(authors_list, function(err, authors){
+    //now you are creating the author list form the array of authors
+    if (err) {
+      console.log(err);
+      return;
+      //consle log if there is an error or exit function
+    }
+    console.log('recreated all authors');
+    console.log("created", authors.length, "authors");
+    //how many authors created
+
+
+    db.Book.remove({}, function(err, books){
+      //removing all the books
+      console.log('removed all books');
+      books_list.forEach(function (bookData) {
+        //going through the stataic arrray and running a for each function
+        var book = new db.Book({
+          //for each one making var of book a new book for book data.titile
+          //the author is missing because it s a spearte function
+          title: bookData.title,
+          image: bookData.image,
+          copy: bookData.paste,
+          releaseDate: bookData.releaseDate
+        });
+        db.Author.findOne({name: bookData.author}, function (err, foundAuthor) {
+          //going into author collectio
+          //looking for name that has book data of author that exists
+          //once we have found the author then keep going
+          //findOne: finding only on instance - wants to find it one at a time because of for each
+          console.log('found author ' + foundAuthor.name + ' for book ' + book.title);
+          if (err) {
+            console.log(err);
+            return;
+          }
+          book.author = foundAuthor;
+          //matches book.author to actual foundAuthor object
+          //does this string = this string
+          book.save(function(err, savedBook){
+            if (err) {
+              return console.log(err);
+            }
+            console.log('saved ' + savedBook.title + ' by ' + foundAuthor.name);
+          });
+        });
+      });
+    });
   });
-
 });
