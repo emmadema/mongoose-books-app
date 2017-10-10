@@ -1,3 +1,5 @@
+//on the front end does not need ot be exported
+
 console.log("Sanity Check: JS is working!");
 var template;
 var $booksList;
@@ -11,13 +13,18 @@ $(document).ready(function(){
   var source = $('#books-template').html();
   template = Handlebars.compile(source);
 
+  //using jquery to run ajax
+  //after it hits the ajax will go to the route in server.js
   $.ajax({
-    method: 'GET',
+    method: 'GET', 
     url: '/api/books',
     success: handleSuccess,
     error: handleError
   });
 
+  //when you submit form post to books
+  //got to the server.js
+  //form submit->aJAX->backendroute->stat data store
   $('#newBookForm').on('submit', function(e) {
     e.preventDefault();
     $.ajax({
@@ -29,6 +36,7 @@ $(document).ready(function(){
     });
   });
 
+  //method for deleting books
   $booksList.on('click', '.deleteBtn', function() {
     console.log('clicked delete button to', '/api/books/'+$(this).attr('data-id'));
     $.ajax({

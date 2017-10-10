@@ -1,7 +1,14 @@
 // This file allows us to seed our application with data
 // simply run: `node seed.js` from the root of this project folder.
+//connects everything to this because we want it all on the database
+//node seed.js
+//allows you to reset the database that you are working with
 
-var db = require('./models');
+var db = require('./models');//connects to mongoose
+//asking for the modeles folder
+//which contains index
+//which requires book
+//also requires mongoose and db connection
 
 var books_list = [
   {
@@ -55,7 +62,10 @@ var books_list = [
 ];
 
 // remove all records that match {} -- which means remove ALL records
-db.Book.remove({}, function(err, books){
+//mongoose operations show ability to see database
+db.Book.remove({}, function(err, books){//remove function operates on book we required 
+ //removes everything because {} are empty
+ //otherwise console.log errors 
   if(err) {
     console.log('Error occurred in remove', err);
   } else {
@@ -63,8 +73,9 @@ db.Book.remove({}, function(err, books){
 
     // create new records based on the array books_list
     db.Book.create(books_list, function(err, books){
+      //once it is whiped create a book list array and feed it back in
       if (err) { return console.log('err', err); }
-      console.log("created", books.length, "books");
+      console.log("created", books.length, "books"); //will console log haw may books added
       process.exit();
     });
   }
